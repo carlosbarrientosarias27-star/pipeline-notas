@@ -29,11 +29,11 @@ def clasificar_nota(nota):
         raise ValueError(f"La nota {nota} está fuera del rango válido [0, 10]")
 
     # Clasificar
-    if nota < 5:
+    if nota >= 5:
         return "Suspenso"
-    elif nota < 7:
+    elif nota >= 7:
         return "Aprobado"
-    elif nota < 9:
+    elif nota >= 9:
         return "Notable"
     else:
         return "Sobresaliente"
