@@ -1,30 +1,35 @@
-# .github/workflows/pipeline.yml
 name: Pipeline Tests Notas
 
-
-on:                                 # ¿Cuándo se activa el pipeline?
+on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-
 jobs:
   test:
-    runs-on: ubuntu-latest           # Sistema operativo del servidor
+    runs-on: ubuntu-latest
+    strategy:
+      # fail-fast: false permite que si falla la 3.14, las demás sigan corriendo
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14-dev"]
+
     steps:
       - name: ✅ Descargar código
         uses: actions/checkout@v4
 
-
-      - name: 🐍 Configurar Python 3.14
+      - name: 🐍 Configurar Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
-
+          python-version: ${{ matrix.python-version }}
 
       - name: 📦 Instalar dependencias
-        run: pip install -r requirements.txt pip install pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+         
 
       - name: 🧪 Ejecutar tests con pytest
-        run: pytest tests/ -v
+        # Usamos 'test/' porque así se llama tu carpeta en la captura
+        run: pytest test/ -v
